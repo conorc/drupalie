@@ -1,0 +1,120 @@
+
+/****************************/
+/* LOCAL CSS                */
+/****************************/
+
+/* Put your custom CSS and CSS overrides in this file and  */
+/* rename it local.css.  By restricting your CSS changes   */
+/* to local.css, your changes will not be overwritten when */
+/* upgrading to a new version of this theme.  You can also */
+/* use a local-rtl.css file for the equivalent in RTL.     */
+
+/* Steps to activate local.css:                       */
+/* 1. Add your custom CSS to this file                */
+/* 2. Rename this file to local.css                   */
+/* 3. Clear cached data at admin/settings/performance */
+
+
+form input.form-submit {
+	margin: 2px;
+	padding: 6px 24px;
+}
+
+table, thead, thead th, tbody, th, tr, tr.odd, tr.even, tr.odd td, tr.even td, td {
+	border: 0;
+	border-top: 0;
+	border-bottom: 0;
+	background: transparent;
+}
+
+a, a:link, a:visited {
+	color: #666;
+	border-bottom: 1px solid #eee;
+}
+
+a:hover, a:focus, a:active {
+	color: #999;
+	text-decoration: none;
+	border-bottom: 1px solid #999;
+}
+
+#site-name a, #site-name a:link, #site-name a:visited {
+	color: #000;
+	border-bottom: 0px solid #eee;
+	font-family: 'DroidSerifRegular';
+}
+
+#site-name a:hover, #site-name a:focus, #site-name a:active {
+	color: #999;
+	text-decoration: none;
+	border-bottom: 0px solid #999;
+	font-family: 'DroidSerifRegular';
+}
+
+
+.view-directory td.views-field-title {
+	width: 30%;
+	vertical-align: top;
+	padding-bottom: 2.5em;
+}
+.view-directory td.views-field-body {
+	width: 70%;
+	vertical-align: top;
+	padding-bottom: 2.5em;
+}
+.view-directory th.views-field-title {
+	display: none;
+}
+
+#header-site-info {
+	padding-bottom: 2.5em;
+}
+
+h1, h1.title, h2, h2.title, h3, h3.title {
+	font-weight: normal;
+}
+
+
+
+body.front .views-field-field-showcase-image {
+	position: relative;
+	float: left;
+	padding-right: 40px;
+}
+
+#pid-showcase .field-name-field-showcase-image {
+	position: relative;
+	float: left;
+	padding-right: 40px;
+}
+#pid-showcase .view-showcase .views-row {
+	overflow: auto;
+	width: 100%
+}
+
+
+#main-menu-inner {
+	padding-bottom: 2.5em;
+}
+#preface-bottom-inner {
+	padding-bottom: 2.5em;
+}
+
+.views-field-field-first-name,
+.views-field-field-surname {
+	font-family: 'DroidSerifRegular';
+	font-size: 120%;
+}
+
+ul.nice-menu a {
+	display: block;
+	color: #000;
+}
+
+#slogan {
+	background: #669966;
+	padding: 0.4em 2em 0.2em 0.4em;
+	color: #fff;
+	letter-spacing: 0.125em;
+	width: 100%;
+}

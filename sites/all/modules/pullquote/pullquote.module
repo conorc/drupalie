@@ -1,0 +1,27 @@
+<?php
+/*
+ * Includes a CSS and JS file.
+ */
+function pullquote_init() {
+  $path = drupal_get_path('module', 'pullquote');
+  drupal_add_css($path . '/pullquote.css');
+  drupal_add_js($path . '/pullquote.js');
+}
+
+/*
+ * Implementation of hook_help()
+ * See http://drupal.org/node/632280
+ */
+function pullquote_help($path, $arg) {
+  $output = '';
+  switch ($path) {
+    case 'admin/help#pullquote':
+      $output .= '<h3>' . t('About') . '</h3>';
+      $output .= '<p>' . t('The Pullquote module duplicates text as a formatted pullquote.') . '</p>';
+      $output .= '<h3>' . t('Uses') . '</h3>';
+      $output .= '<p>' . t('Surround any text to be duplicated as a pull quote with a span that has the class \'pullquote\'. For example: <code>&lt;span class="pullquote"&gt;this is a test&lt;/span&gt;</code>.') . '</p>';
+      $output .= '<p>' . t('To display on the left of the body text instead, use the class \'pullquote-left\' in addition. For example: <code>&lt;span class="pullquote pullquote-left"&gt;this is a left test&lt;/span&gt;</code>.') . '</p>';
+      $output .= '<p>For more information, see the online handbook entry for <a href="http://drupal.org/project/pullquote">Pullquote module</a>.</p>';
+  }
+  return $output;
+}

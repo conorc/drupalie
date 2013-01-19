@@ -1,0 +1,13 @@
+Pullquote 7.x-1.2, 2011-03-03
+-----------------------------
+Skipped version 7.x-1.1 to that otherwise identical releases with the same 
+functionality have corresponding release numbers
+#917422 by lliss: works inside any html tag.
+#1048904 by callison: javascript issue due to jQuery upgrade in D7
+#1068368 by callison: help page added.
+More comprehensive and accurate installation guide added to README.TXT
+CSS code in pullquote.css file improved
+
+Pullquote 7.x-1.x, 2011-01-11
+-----------------------------
+D7 port from 6.x-1.1
