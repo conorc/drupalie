@@ -6,6 +6,30 @@
  * of these @include files will be combined into a single file.
  */
 /* Import Sass mixins, variables, Compass modules, etc. */
+/**
+ * Homepage blocks
+ */
+/* line 7, ../sass/_blocks.scss */
+#block-block-3,
+#block-block-4,
+#block-block-6,
+#block-block-7 {
+  padding: 0 2%;
+  width: 46%;
+  float: left;
+}
+
+/* line 13, ../sass/_blocks.scss */
+#block-block-6 {
+  clear: both;
+}
+
+/* line 17, ../sass/_blocks.scss */
+#block-views-news-and-events-block {
+  clear: both;
+  width: 100%;
+}
+
 /* HTML element (SMACSS base) rules */
 /**
  * @file
@@ -1700,7 +1724,7 @@ tr.selected td {
 /* line 803, ../sass/components/_misc.scss */
 .progress .filled {
   background-color: #0072b9;
-  background-image: url('../images/progress.gif?1376896851');
+  background-image: url('../images/progress.gif?1384016928');
 }
 
 /**
