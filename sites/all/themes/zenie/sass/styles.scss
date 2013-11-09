@@ -11,6 +11,7 @@
 
 /* HTML element (SMACSS base) rules */
 @import "normalize";
+@import "components/blocks";
 
 /* Layout rules */
 @import "layouts/responsive";
