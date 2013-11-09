@@ -1,0 +1,79 @@
+/* Import Sass mixins, variables, Compass modules, etc. */
+/* line 4, ../sass/local.scss */
+a:link {
+  color: #74c492;
+  text-decoration: none;
+}
+
+/* line 8, ../sass/local.scss */
+a:visited {
+  color: #74c492;
+  text-decoration: none;
+}
+
+/* line 13, ../sass/local.scss */
+a:hover,
+a:focus {
+  color: #28718c;
+  text-decoration: none;
+}
+
+/* line 17, ../sass/local.scss */
+a:active {
+  color: #28718c;
+  text-decoration: none;
+}
+
+/* line 28, ../sass/local.scss */
+#header {
+  width: 100%;
+  height: 360px;
+  background: url("../images/cliffs_001.jpg") center 25%;
+  overflow: hidden;
+  border-bottom: 2px solid #c6c6bd;
+}
+/* line 35, ../sass/local.scss */
+#header a:link {
+  color: white;
+  text-decoration: none;
+}
+/* line 39, ../sass/local.scss */
+#header a:visited {
+  color: white;
+  text-decoration: none;
+}
+/* line 44, ../sass/local.scss */
+#header a:hover,
+#header a:focus {
+  color: white;
+  text-decoration: none;
+}
+/* line 48, ../sass/local.scss */
+#header a:active {
+  color: white;
+  text-decoration: none;
+}
+/* line 53, ../sass/local.scss */
+#header .views-field-field-showcase-image {
+  padding-top: 1em;
+  padding-right: 2em;
+  position: relative;
+  float: left;
+}
+/* line 59, ../sass/local.scss */
+#header .views-field-title {
+  padding-top: 2em;
+}
+
+/* line 64, ../sass/local.scss */
+#block-blockify-blockify-site-name {
+  font-size: 2em;
+  line-height: 1.5em;
+}
+
+/* line 71, ../sass/local.scss */
+.pictogram,
+.field-name-field-icon-text {
+  font-family: 'ModernPictogramsRegular';
+  font-size: 3em;
+}
