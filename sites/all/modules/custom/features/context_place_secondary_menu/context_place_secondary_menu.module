@@ -1,0 +1,7 @@
+<?php
+/**
+ * @file
+ * Code for the Context place secondary menu feature.
+ */
+
+include_once 'context_place_secondary_menu.features.inc';
