@@ -1,0 +1,12 @@
+<?php
+
+/**
+ * Enable modules.
+ */
+function drupalie_update_7001() {
+  $modules = array(
+    'context_place_secondary_menu',
+  );
+  module_enable($modules);
+  return t('Enabled modules');
+}
