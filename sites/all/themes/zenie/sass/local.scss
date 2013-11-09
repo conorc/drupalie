@@ -1,0 +1,74 @@
+/* Import Sass mixins, variables, Compass modules, etc. */
+@import "init";
+
+a:link {
+    color: $midgreen;
+    text-decoration: none;
+}
+a:visited {
+    color: $midgreen;
+    text-decoration: none;
+}
+a:hover,
+a:focus {
+    color: $midblue;
+    text-decoration: none;
+}
+a:active {
+    color: $midblue;
+    text-decoration: none;
+}
+
+
+
+
+
+
+
+#header {
+  width: 100%;
+  height: 360px;
+  background: url("../images/cliffs_001.jpg") center 25%;
+  overflow: hidden;
+  border-bottom: 2px solid #c6c6bd;
+  
+  a:link {
+    color: $white;
+    text-decoration: none;
+  }
+  a:visited {
+    color: $white;
+    text-decoration: none;
+  }
+  a:hover,
+  a:focus {
+    color: $white;
+    text-decoration: none;
+  }
+  a:active {
+    color: $white;
+    text-decoration: none;
+  }
+
+  .views-field-field-showcase-image {
+    padding-top: 1em;
+    padding-right: 2em;
+    position: relative;
+    float: left;
+  }
+  .views-field-title {
+    padding-top: 2em;
+  }
+}
+
+#block-blockify-blockify-site-name {
+  font-size: 2em;
+  line-height: 1.5em;
+}
+
+
+.pictogram,
+.field-name-field-icon-text {
+  font-family: 'ModernPictogramsRegular';
+  font-size: 3em;
+}
