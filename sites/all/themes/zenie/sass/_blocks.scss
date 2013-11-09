@@ -1,1 +1,20 @@
- 
+/**
+ * Homepage blocks
+ */
+#block-block-3,
+#block-block-4,
+#block-block-6,
+#block-block-7 {
+  padding: 0 2%;
+  width: 46%;
+  float: left;
+}
+
+#block-block-6 {
+  clear: both;
+}
+
+#block-views-news-and-events-block {
+  clear: both;
+  width: 100%;
+}
