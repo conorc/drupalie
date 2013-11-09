@@ -1,0 +1,80 @@
+<?php
+
+/**
+ * @file
+ * Install, update, and uninstall functions for the responsive_navigation module.
+ */
+
+/**
+ * Implements hook_uninstall().
+ */
+function responsive_navigation_uninstall() {
+  // Remove all the configuration variables created by the module.
+  db_delete('variable')
+    ->condition('name', 'responsive_navigation%', 'LIKE')
+    ->execute();
+
+  // Remove all the block configuration the module.
+  if (module_exists('block')) {
+    db_delete('block')
+      ->condition('module', 'responsive_navigation')
+      ->execute();
+    db_delete('block_node_type')
+      ->condition('module', 'responsive_navigation')
+      ->execute();
+    db_delete('block_role')
+      ->condition('module', 'responsive_navigation')
+      ->execute();
+  }
+  cache_clear_all();
+}
+
+/**
+ * Implements hook_enable().
+ */
+function responsive_navigation_enable() {
+  drupal_set_message(check_plain('To use Responsive Navigation, go to the administer blocks page and enable a Responsive Navigation block.'));
+}
+
+/**
+ * Implements hook_requirements().
+ */
+function responsive_navigation_requirements($phase) {
+  $requirements = array();
+  if ($phase == 'runtime') {
+    $t = get_t();
+    $requirements['responsive_navigation']['title'] = t('responsive-nav.js library');
+    if (module_exists('libraries') && function_exists('libraries_get_libraries')) {
+      $library = libraries_get_libraries();
+      $rnjs_installed = (isset($library['responsive_navigation'])) ? TRUE : FALSE;
+    }
+    // if Libraries module isn't installed, check manually. NOTE: This should never execute as the Libaries module is required.
+    elseif (_rnjs_installed($phase)) {
+      $rnjs_installed = TRUE;
+    }
+    else {
+      $rnjs_installed = FALSE;
+    }
+    if ($rnjs_installed) {
+      $requirements['responsive_navigation']['value'] = $t('Installed');
+      $requirements['responsive_navigation']['severity'] = REQUIREMENT_OK;
+    }
+    else {
+      $requirements['responsive_navigation']['value'] = $t('Not installed');
+      $requirements['responsive_navigation']['severity'] = REQUIREMENT_ERROR;
+      $requirements['responsive_navigation']['description'] = $t('Please download the responsive-nav.js library from !link.', array('!link' => l(RNJS_SITE_URL, RNJS_SITE_URL)));
+    }
+  }
+  return $requirements;
+}
+
+
+/**
+ * Check if responsive-nav.js is installed if the Libraries module isn't installed.
+ */
+function _rnjs_installed($phase) {
+  return (
+    file_exists('sites/all/libraries/responsive_navigation/' . RNJS_MAIN_JS)
+    || file_exists('profiles/' . drupal_get_profile() . '/libraries/responsive_navigation/' . RNJS_MAIN_JS)
+  );
+}

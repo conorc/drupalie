@@ -1,0 +1,690 @@
+<?php
+
+/**
+ * @file
+ * Implements the responsive-nav.js plugin.
+ * Menu functions are borrowed from nice_menus, superfish and menu_block module.
+ */
+
+module_load_include('inc', 'responsive_navigation', 'responsive_navigation_common');
+
+/**
+ * Implements hook_help().
+ */
+function responsive_navigation_help($path, $arg) {
+  switch ($path) {
+    case 'admin/modules#description':
+      $output .= t(RNJS_MAIN_JS . ' plugin for a single Drupal menu.');
+      break;
+    case 'admin/config/user-interface/responsive_navigation':
+      $output = t('<p>Block-specific !rnjs settings could be found at !link.</p>', array('!rnjs' => l(RNJS_MAIN_JS, RNJS_SITE_URL), '!link' => l('admin/structure/block', 'admin/structure/block')));
+      return $output;
+  }
+}
+
+/**
+ * Implements hook_menu().
+ */
+function responsive_navigation_menu() {
+  $items = array();
+
+  $items['admin/config/user-interface/responsive_navigation'] = array(
+    'title' => 'Responsive Navigation',
+    'description' => 'Administer the Responsive Navigation module.',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('responsive_navigation_admin_settings'),
+    'file' => 'responsive_navigation_admin.inc',
+    'access arguments' => array('administer responsive navigation'),
+  );
+
+  return $items;
+}
+
+/**
+ * Implements hook_block_info().
+ */
+function responsive_navigation_block_info() {
+  $blocks = array();
+  $number = variable_get('responsive_navigation_number', 1);
+  for ($i = 1; $i <= $number; $i++) {
+    $blocks[$i] = array(
+      'info' => variable_get('responsive_navigation_name_' . $i, 'Responsive Navigation ' . $i) . ' (responsive-nav.js)',
+      'cache' => DRUPAL_NO_CACHE,
+    );
+  }
+  return $blocks;
+}
+
+
+/**
+ * Implements hook_permission().
+ */
+function responsive_navigation_permission() {
+  $permissions = array(
+    'administer responsive navigation' => array(
+      'title' => t('Administer Responsive Navigation'),
+      'description' => t('Administer permission for Responsive Navigation.'),
+    ),
+  );
+  return $permissions;
+}
+
+/**
+ * Implements hook_block_configure().
+ */
+function responsive_navigation_block_configure($delta) {
+  $form['responsive_navigation_name_' . $delta] = array(
+    '#type' => 'textfield',
+    '#title' => t('Block name'),
+    '#description' => t('This name is used in the block list.'),
+    '#default_value' => variable_get('responsive_navigation_name_' . $delta, 'Responsive Navigation ' . $delta),
+    '#weight' => 0,
+  );
+  $form['menu'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Menu settings'),
+    '#weight' => 1,
+    '#collapsible' => TRUE,
+  );
+  $form['menu']['responsive_navigation_menu_' . $delta] = array(
+    '#type' => 'select',
+    '#title' => t('Menu parent'),
+    '#description' => t('The menu parent from which to show a Responsive Navigation menu.'),
+    '#default_value' => variable_get('responsive_navigation_menu_' . $delta, 'navigation:0'),
+    '#options' => menu_parent_options(menu_get_menus(), 0),
+  );
+  $form['menu']['responsive_navigation_depth_' . $delta] = array(
+    '#type' => 'select',
+    '#title' => t('Menu depth'),
+    '#description' => t('The depth of the menu, i.e. the number of child levels starting with the parent selected above. Leave set to -1 to display all children and use 0 to display no children.'),
+    '#default_value' => variable_get('responsive_navigation_depth_' . $delta, -1),
+    '#options' => drupal_map_assoc(range(-1, 5)),
+  );
+  $form['menu']['responsive_navigation_respect_expand_' . $delta] = array(
+    '#type' => 'select',
+    '#title' => t('Respect "Show as expanded" option'),
+    '#description' => t('Menu items have a "Show as expanded" option, which is disabled by default. Since menu items do NOT have this option checked by default, you should choose Yes here once you have configured the menu items that you DO want to expand.'),
+    '#options' => array(
+      0 => t('No'),
+      1 => t('Yes'),
+    ),
+    '#default_value' => variable_get('responsive_navigation_respect_expand_' . $delta, 0),
+  );
+  $form['responsive_navigation'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('responsive-nav.js block settings'),
+    '#description' => t('These are settings that will be passed to responsive-nav.js for this menu block.'),
+    '#weight' => 2,
+    '#collapsible' => TRUE,
+  );
+  $form['responsive_navigation']['responsive_navigation_animate_' . $delta] = array(
+    '#type' => 'select',
+    '#title' => t('Animate'),
+    '#options' => array(
+      0 => t('False'),
+      1 => t('True'),
+    ),
+    '#description' => t('Use CSS3 transitions, true or false'),
+    '#default_value' => variable_get('responsive_navigation_animate_' . $delta, 1),
+    '#required' => TRUE,
+  );
+  $form['responsive_navigation']['responsive_navigation_transition_' . $delta] = array(
+    '#type' => 'textfield',
+    '#title' => t('Transition'),
+    '#description' => t('Speed of the transition in milliseconds. Default: 400'),
+    '#default_value' => variable_get('responsive_navigation_transition_' . $delta, 400),
+    '#size' => 4,
+    '#required' => TRUE,
+  );
+  $form['responsive_navigation']['responsive_navigation_label_' . $delta] = array(
+    '#type' => 'textfield',
+    '#title' => t('Label'),
+    '#default_value' => variable_get('responsive_navigation_label_' . $delta, 'Menu'),
+    '#description' => t('Change the default label for the responsive navigation link toggle.'),
+    '#required' => TRUE,
+  );
+  $form['responsive_navigation']['responsive_navigation_insert_' . $delta] = array(
+    '#type' => 'select',
+    '#title' => t('Insert'),
+    '#options' => array(
+      'before' => t('Before'),
+      'after' => t('After'),
+    ),
+    '#default_value' => variable_get('responsive_navigation_insert_' . $delta, 'before'),
+    '#description' => t('Select where to insert the toggle before or after the navigation.'),
+    '#required' => TRUE,
+  );
+  $form['responsive_navigation']['responsive_navigation_openpos_' . $delta] = array(
+    '#type' => 'select',
+    '#title' => t('Open Position'),
+    '#options' => array(
+      'relative' => t('Relative'),
+      'static' => t('Static'),
+    ),
+    '#default_value' => variable_get('responsive_navigation_openpos_' . $delta, 'relative'),
+    '#description' => t('Select the position of the opened navigation.'),
+    '#required' => TRUE,
+  );
+  $form['responsive_navigation']['responsive_navigation_jsclass_' . $delta] = array(
+    '#type' => 'textfield',
+    '#title' => t('Javascript Class'),
+    '#default_value' => variable_get('responsive_navigation_jsclass_' . $delta, 'js'),
+    '#description' => t('The class "JS enabled" is added to the &lt;html&gt; element.'),
+  );
+  return $form;
+}
+
+/**
+ * Implements hook_block_save().
+ */
+function responsive_navigation_block_save($delta, $edit) {
+  variable_set('responsive_navigation_name_' . $delta, $edit['responsive_navigation_name_' . $delta]);
+  variable_set('responsive_navigation_menu_' . $delta, $edit['responsive_navigation_menu_' . $delta]);
+  variable_set('responsive_navigation_depth_' . $delta, $edit['responsive_navigation_depth_' . $delta]);
+  variable_set('responsive_navigation_respect_expand_' . $delta, $edit['responsive_navigation_respect_expand_' . $delta]);
+  variable_set('responsive_navigation_animate_' . $delta, $edit['responsive_navigation_animate_' . $delta]);
+  variable_set('responsive_navigation_transition_' . $delta, $edit['responsive_navigation_transition_' . $delta]);
+  variable_set('responsive_navigation_label_' . $delta, $edit['responsive_navigation_label_' . $delta]);
+  variable_set('responsive_navigation_insert_' . $delta, $edit['responsive_navigation_insert_' . $delta]);
+  variable_set('responsive_navigation_openpos_' . $delta, $edit['responsive_navigation_openpos_' . $delta]);
+  variable_set('responsive_navigation_jsclass_' . $delta, $edit['responsive_navigation_jsclass_' . $delta]);
+}
+
+/**
+ * Implements hook_block_view().
+ */
+function responsive_navigation_block_view($delta = 1) {
+  // Build the Nice menu for the block.
+  list($menu_name, $mlid) = explode(':', variable_get('responsive_navigation_menu_' . $delta, 'navigation:0'));
+
+  $depth = variable_get('responsive_navigation_depth_' . $delta, '-1');
+
+  if ($output = theme('responsive_navigation', array(
+    'id' => $delta,
+    'menu_name' => $menu_name,
+    'mlid' => $mlid,
+    'depth' => $depth))) {
+
+    $block['content']['#markup'] = $output['content'];
+    // If we're building the navigation block
+    // use the same block title logic as menu module.
+    global $user;
+    if ($output['subject'] == t('navigation') && $user->uid) {
+      $subject = $user->name;
+    }
+    else {
+      $subject = $output['subject'];
+    }
+    $block['subject'] = check_plain($subject);
+    $block['content']['#contextual_links']['simple_menus'] = array('admin/structure/menu/manage', array($menu_name));
+  }
+  else {
+    $block['content'] = FALSE;
+  }
+
+  return $block;
+}
+
+/**
+ * Implements hook_theme().
+ */
+function responsive_navigation_theme() {
+  return array(
+    'responsive_navigation_tree' => array(
+      'variables' => array(
+        'menu_name' => NULL,
+        'mlid' => NULL,
+        'depth' => -1,
+        'menu' => NULL,
+        'respect_expanded' => 0,
+      ),
+    ),
+    'responsive_navigation_build' => array(
+      'variables' => array(
+        'menu' => NULL,
+        'depth' => -1,
+        'trail' => NULL,
+        'respect_expanded' => 0,
+      ),
+    ),
+    'responsive_navigation' => array(
+      'variables' => array(
+        'id' => NULL,
+        'menu_name' => NULL,
+        'mlid' => NULL,
+        'depth' => -1,
+        'respect_expanded' => 0,
+        'menu' => NULL,
+      ),
+    ),
+    'responsive_navigation_main_menu' => array(
+      'variables' => array('depth' => -1),
+    ),
+    'responsive_navigation_secondary_menu' => array(
+      'variables' => array('depth' => -1),
+    ),
+  );
+}
+
+/**
+ * Build the active trail from the page's menu data.
+ */
+function responsive_navigation_build_page_trail($page_menu) {
+  $trail = array();
+  foreach ($page_menu as $item) {
+    if ($item['link']['in_active_trail'] || ($item['link']['href'] == '<front>' && drupal_is_front_page())) {
+      $trail[] = $item['link']['mlid'];
+    }
+    if ($item['below']) {
+      $trail = array_merge($trail, responsive_navigation_build_page_trail($item['below']));
+    }
+  }
+
+  return $trail;
+}
+
+/**
+ * Builds the final Responsive Navigation menu.
+ *
+ * @return mixed
+ *   An HTML string of properly nested Responsive Navigation menu lists.
+ */
+function theme_responsive_navigation_tree($variables) {
+
+  /*
+   * The top-level menu name that contains the menu to use (e.g. navigation
+   * or main-menu) for Drupal menus. For custom $menus this is just the
+   * name for menu display.
+   */
+  $menu_name = $variables['menu_name'];
+
+  /*
+   * The menu ID from which to start building the items, i.e. the parent
+   * of the displayed menu.
+   */
+  $mlid = $variables['mlid'];
+
+  /*
+   * The number of children levels to display. Use -1 to display all children
+   * and use 0 to display no children.
+   */
+  $depth = $variables['depth'];
+
+  /*
+   * Optional. A custom menu array to use for theming -- it should have.
+   * the same structure as that returned by menu_tree_all_data().
+   */
+  $menu = $variables['menu'];
+  $respect_expanded = $variables['respect_expanded'];
+  // Load the full menu array.
+  $menu = isset($menu) ? $menu : menu_tree_all_data($menu_name);
+  if (isset($menu)) {
+    $page_menu = menu_tree_page_data($menu_name);
+    $trail = responsive_navigation_build_page_trail($page_menu);
+    unset($page_menu);
+  }
+
+  // Allow i18n module to translate strings where available.
+  if (module_exists('i18n_menu')) {
+    $menu = i18n_menu_localize_tree($menu);
+  }
+
+  // Assume depth == 0 by default, overriden if mlid is specified.
+  $parent_depth = 0;
+
+  // For custom $menus and menus built all the way from the top-level we.
+  // don't need to "create" the specific sub-menu and we need to get the title.
+  // from the $menu_name since there is no "parent item" array.
+  // Create the specific menu if we have a mlid.
+  if (!empty($mlid)) {
+    // Load the parent menu item.
+    $item = menu_link_load($mlid);
+    $title = check_plain($item['title']);
+    // The depth for our parent item, if it exists.
+    $parent_depth = ($item['depth']) ? $item['depth'] : 0;
+
+    // Narrow down the full menu to the specific sub-tree we need.
+    for ($p = 1; $p < 10; $p++) {
+      if ($sub_mlid = $item["p$p"]) {
+        $subitem = menu_link_load($sub_mlid);
+        // Menu sets these ghetto-ass keys in _menu_tree_check_access().
+        $menu = $menu[(50000 + $subitem['weight']) . ' ' . $subitem['title'] . ' ' . $subitem['mlid']]['below'];
+      }
+    }
+  }
+  // Otherwise just set a title and move on.
+  else {
+    // Get the title from the DB since we don't have it in the $menu.
+    $result = db_query("SELECT title FROM {menu_custom} WHERE menu_name = :menu_name", array(':menu_name' => $menu_name))->fetchField();
+    $title = check_plain($result);
+  }
+
+  $output['content'] = '';
+  $output['subject'] = $title;
+
+  if ($menu) {
+    // Set the total menu depth counting from this parent if we need it.
+    $depth = ($depth > 0) ? ($parent_depth + $depth) : $depth;
+    $output['content'] .= theme('responsive_navigation_build', array(
+      'menu' => $menu,
+      'depth' => $depth,
+      'trail' => $trail,
+      'respect_expanded' => $respect_expanded,
+    ));
+  }
+
+  return $output;
+}
+
+/**
+ * Helper function that builds the nested lists of a Responsive Navigation menu.
+ *
+ * @param array $variables
+ *   Menu arguments.
+ */
+function theme_responsive_navigation_build($variables) {
+  // Menu array from which to build the nested lists.
+  $menu = $variables['menu'];
+
+  // The number of children levels to display. Use -1 to display all children
+  // and use 0 to display no children.
+  $depth = $variables['depth'];
+
+  // An array of parent menu items.
+  $trail = $variables['trail'];
+
+  // "Show as expanded" option.
+  $respect_expanded = $variables['respect_expanded'];
+
+  $output = '';
+
+  // Prepare to count the links so we can mark first, last, odd and even.
+  $index = 0;
+  $count = 0;
+  foreach ($menu as $menu_count) {
+    if ($menu_count['link']['hidden'] == 0) {
+      $count++;
+    }
+  }
+  // Get to building the menu.
+  foreach ($menu as $menu_item) {
+    $mlid = $menu_item['link']['mlid'];
+    // Check to see if it is a visible menu item.
+    if (!isset($menu_item['link']['hidden']) || $menu_item['link']['hidden'] == 0) {
+      // Check our count and build first, last, odd/even classes.
+      $index++;
+      $first_class = ($index == 1) ? 'first' : '';
+      $oddeven_class = ($index % 2 == 0) ? 'even' : 'odd';
+      $last_class = ($index == $count) ? 'last' : '';
+      // Build class name based on menu path
+      // e.g. to give each menu item individual style.
+      $class = str_replace(array('http', 'https', '://', 'www'), '', $menu_item['link']['href']);
+      // Strip funny symbols.
+      $class = drupal_html_class('menu-path-' . $class);
+      if ($trail && in_array($mlid, $trail)) {
+        $class .= ' active-trail';
+      }
+      // If it has children build a nice little tree under it.
+      // Build a nice little tree under it if it has children, and has been set
+      // to expand (when that option is being respected).
+      if ((!empty($menu_item['link']['has_children'])) &&
+          (!empty($menu_item['below'])) && $depth != 0 &&
+          ($respect_expanded == 0 || $menu_item['link']['expanded'])) {
+        // Keep passing children into the function 'til we get them all.
+        if ($menu_item['link']['depth'] <= $depth || $depth == -1) {
+          $children = array(
+            '#theme' => 'responsive_navigation_build',
+            '#prefix' => '<ul>',
+            '#suffix' => '</ul>',
+            '#menu' => $menu_item['below'],
+            '#depth' => $depth,
+            '#trail' => $trail,
+            '#respect_expanded' => $respect_expanded,
+          );
+        }
+        else {
+          $children = '';
+        }
+        // Set the class to parent only of children are displayed.
+        $parent_class = ($children && ($menu_item['link']['depth'] <= $depth || $depth == -1)) ? 'menuparent ' : '';
+        $element = array(
+          '#below' => $children,
+          '#title' => $menu_item['link']['title'],
+          '#href' => $menu_item['link']['href'],
+          '#localized_options' => $menu_item['link']['localized_options'],
+          '#attributes' => array(
+            'class' => array(
+              'menu-' . $mlid,
+              $parent_class,
+              $class,
+              $first_class,
+              $oddeven_class,
+              $last_class,
+            ),
+          ),
+          '#original_link' => $menu_item['link'],
+        );
+        $variables['element'] = $element;
+
+        // Check for context reactions menu.
+        if (module_exists('context')) {
+          context_preprocess_menu_link($variables);
+          if (isset($variables['element']['#localized_options']['attributes']['class']) &&
+            in_array('active', $variables['element']['#localized_options']['attributes']['class']) &&
+            !in_array('active-trail', $variables['element']['#attributes']['class'])) {
+            $variables['element']['#attributes']['class'][] = ' active-trail';
+          }
+        }
+
+        $output .= theme('menu_link', $variables);
+      }
+      else {
+        $element = array(
+          '#below' => '',
+          '#title' => $menu_item['link']['title'],
+          '#href' => $menu_item['link']['href'],
+          '#localized_options' => $menu_item['link']['localized_options'],
+          '#attributes' => array(
+            'class' => array(
+              'menu-' . $mlid,
+              $class,
+              $first_class,
+              $oddeven_class,
+              $last_class,
+            ),
+          ),
+          '#original_link' => $menu_item['link'],
+        );
+        $variables['element'] = $element;
+
+        // Check for context reactions menu.
+        if (module_exists('context')) {
+          context_preprocess_menu_link($variables);
+          if (isset($variables['element']['#localized_options']['attributes']['class']) &&
+            in_array('active', $variables['element']['#localized_options']['attributes']['class']) &&
+            !in_array('active-trail', $variables['element']['#attributes']['class'])) {
+            $variables['element']['#attributes']['class'][] = ' active-trail';
+          }
+        }
+
+        $output .= theme('menu_link', $variables);
+      }
+    }
+  }
+  return $output;
+}
+
+/**
+ * Theme function to allow any menu tree to be themed as a Responsive Navigation menu.
+ *
+ * @param array $variables
+ *   is an array, menu arguments.
+ *
+ * @return mixed
+ *   An HTML string of Responsive Navigation menu links.
+ */
+function theme_responsive_navigation($variables) {
+  $output = array(
+    'content' => '',
+    'subject' => '',
+  );
+
+  // The Responsive Navigation menu ID.
+  $id = $variables['id'];
+  // The top parent menu name from which to build the full menu.
+  $menu_name = $variables['menu_name'];
+  // The menu ID from which to build the displayed menu.
+  $mlid = $variables['mlid'];
+  // The number of children levels to display. Use -1 to display all children
+  // and use 0 to display no children.
+  $depth = $variables['depth'];
+  /*
+   * Optional. A custom menu array to use for theming --
+   * it should have the same structure as that returned
+   * by menu_tree_all_data(). Default is the standard menu tree.
+   */
+  $menu = $variables['menu'];
+  // "Show as expanded" option.
+  $respect_expanded = $variables['respect_expanded'];
+  if ($menu_tree = theme('responsive_navigation_tree', array(
+    'menu_name' => $menu_name,
+    'mlid' => $mlid,
+    'depth' => $depth,
+    'menu' => $menu,
+    'respect_expanded' => $respect_expanded))) {
+    if ($menu_tree['content']) {
+      // Only one unique "#nav" div tag for now
+      $output['content'] = '<div id="nav" class="responsive-navigation-menu-' . $id . ' navigation"><ul class="responsive-navigation responsive-navigation-' . $menu_name . '" id="responsive-navigation-menu-' . $id . '">' . $menu_tree['content'] . '</ul></div>' . "\n";
+      $output['subject'] = $menu_tree['subject'];
+    }
+  }
+  return $output;
+}
+
+/**
+ * Theme the main menu as a Responsive Navigation menu.
+ *
+ * @return mixed
+ *   An HTML string of Responsive Navigation main menu links.
+ */
+function theme_responsive_navigation_main_menu($variables) {
+
+  // The number of children levels to display. Use -1 to display all children.
+  // and use 0 to display no children.
+  $depth = $variables['depth'];
+  $menu_name = variable_get('menu_main_links_source', 'main-menu');
+  $output = theme('responsive_navigation', array(
+    'id' => 0,
+    'menu_name' => $menu_name,
+    'mlid' => 0,
+    'depth' => $depth,
+  ));
+  return $output['content'];
+}
+
+/**
+ * Theme the secondary menu as a Responsive Navigation menu.
+ *
+ * @return mixed
+ *   An HTML string of Responsive Navigation secondary menu links.
+ */
+function theme_responsive_navigation_secondary_menu($variables) {
+
+  // The number of children levels to display. Use -1 to display all children
+  // and use 0 to display no children.
+  $depth = $variables['depth'];
+  $menu_name = variable_get('menu_secondary_links_source', 'user-menu');
+  $output = theme('responsive_navigation', array(
+    'id' => 0,
+    'menu_name' => $menu_name,
+    'mlid' => 0,
+    'depth' => $depth,
+  ));
+  return $output['content'];
+}
+
+/**
+ * Implements hook_library().
+ */
+function responsive_navigation_library() {
+  $module_path = drupal_get_path('module', 'responsive_navigation');
+
+  // Main Javascript file.
+  $libraries['responsive_navigation'] = array(
+    'title' => 'Responsive Navigation',
+    'website' => 'http://drupal.org/handbook/modules/responsive_navigation',
+    'version' => '1.0',
+    'js' => array(
+      $module_path . '/responsive_navigation.js' => array(),
+    ),
+  );
+
+  return $libraries;
+}
+
+/**
+ * Implements hook_libraries_info() from the libraries module.
+ */
+function responsive_navigation_libraries_info() {
+  $libraries = array();
+  $libraries['responsive_navigation'] = array(
+    'name' => 'Responsive Navigation: ' . RNJS_MAIN_JS,
+    'vendor url' => RNJS_GITHUB_URL,
+    'download url' => RNJS_DOWNLOAD_URI,
+    'version arguments' => array(
+      'file'    => RNJS_MAIN_JS,
+      'pattern' => '/responsive-nav.js v([1-9\.]+)/',
+      'lines'   => 3,
+    ),
+    'files' => array(
+      'js' => array(
+        RNJS_MAIN_JS,
+      ),
+      'css' => array(
+        RNJS_MAIN_CSS,
+      ),
+    ),
+    'variants' => array(
+      'minified' => array(
+        'files' => array(
+          'js' => array(
+            RNJS_MAIN_JS_MIN,
+          ),
+          'css' => array(
+            RNJS_MAIN_CSS,
+          ),
+        ),
+        'variant arguments' => array(
+          'variant' => 'minified',
+        ),
+      ),
+    ),
+  );
+
+  return $libraries;
+}
+
+/**
+ * Implements hook_init().
+ * Load the JS libraries and send menus to the template.
+ */
+function responsive_navigation_init() {
+  $name = 'responsive_navigation';
+  if ($library = libraries_detect($name)) {
+    libraries_load($name, 'minified');
+    $total_blocks = variable_get('responsive_navigation_number', '1');
+    $blocks = array('total' => $total_blocks);
+    for ($delta = 1; $delta < $total_blocks + 1; $delta++) {
+      $blocks['blocks']['responsive_navigation_menu_' . $delta] = array(
+        'responsive_navigation_animate' => (variable_get('responsive_navigation_animate_' . $delta, 1)) ? 'true' : 'false',
+        'responsive_navigation_transition' => variable_get('responsive_navigation_transition_' . $delta, 400),
+        'responsive_navigation_label' => variable_get('responsive_navigation_label_' . $delta, 'Menu'),
+        'responsive_navigation_insert' => variable_get('responsive_navigation_insert_' . $delta, 'after'),
+        'responsive_navigation_openpos' => variable_get('responsive_navigation_openpos_' . $delta, 'relative'),
+        'responsive_navigation_jsclass' => variable_get('responsive_navigation_jsclass_' . $delta, 'js'),
+      );
+    }
+    drupal_add_js(array('responsive_navigation' => $blocks), 'setting');
+  }
+  drupal_add_library('responsive_navigation', 'responsive_navigation');
+}

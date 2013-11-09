@@ -1,0 +1,104 @@
+
+CONTENTS OF THIS FILE
+---------------------
+
+ * Installation and Uninstallation
+ * Dependencies
+
+INSTALLATION / UNINSTALLATION
+-----------------------------
+
+1. Decompress the archive and copy the responsive_navigation folder
+   into your modules folder.
+
+     sites/all/modules
+
+2. Install the Libraries 7.x-2.x module into your modules folder.
+
+3. Download the responsive-nav.js plugin. The link is provided below.
+
+   For advanced Drush 4.x+ users, type:
+
+     drush rnjs-plugin
+
+     or
+
+     drush rnjsplugin (shorter alias with no dashes for the lazy)
+
+   It will download archive and decompress and create the folder:
+
+     sites/all/libraries/responsive_navigation
+
+   If you don't have Drush proceed to step 4 and 5 for the manual method.
+
+4. Create a "responsive_navigation" folder under libraries:
+
+     sites/all/libraries/responsive_navigation
+
+5. Unzip the archive and copy the following files to this folder.
+
+   sites/all/libraries/responsive_navigation
+     - responsive-nav.css
+     - responsive-nav.js
+     - responsive-nav.min.js
+
+6. Turn on the module under:
+
+     admin/modules
+
+7. Enable the "Administer Responsive Navigation" permission.
+
+     admin/people/permissions
+
+8. Navigate to:
+
+     admin/config/user-interface/responsive_navigation
+
+   Enable 0 or 1 block. Use 0 if you just want to use the library and
+   code the javascript functions directly into your theme templates.
+   Use 1 if you want to create a menu block with responsive-nav.js.
+
+9. If you chose 1 block, go the block region section in the admin and
+   assign the new block to a region -- preferably near the top of your
+   template.
+
+     admin/structure/block
+
+10. Configure the block you enabled.
+
+      admin/structure/block/manage/responsive_navigation/1/configure
+
+11. To uninstall, disable the Responsive Navigation module.
+
+      admin/modules
+
+    Go to the uninstall section, select the module and uninstall.
+
+      admin/modules/uninstall
+
+    Delete the plugin folder at:
+
+      sites/all/libraries/responsive_navigation
+
+    To delete the responsive-nav.js with Drush:
+
+      drush rm-rnjs-plugin
+
+      or
+
+      drush rmrnjsplugin
+
+For further instructions on using the plugin, see the following 
+website: http://responsive-nav.com
+
+DEPENDENCIES
+------------
+
+The menu module must be enabled.
+
+Libraries 7.x-2.x module
+http://drupal.org/project/libraries
+
+responsive-nav javascript plugin
+http://responsive-nav.com
+https://github.com/viljamis/responsive-nav.js
