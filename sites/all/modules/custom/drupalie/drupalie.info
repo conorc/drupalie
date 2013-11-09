@@ -1,0 +1,6 @@
+name = Drupalie
+description = Tweaks and customizations for Drupal.ie
+core = 7.x
+package = custom
+
+dependencies[] = features
