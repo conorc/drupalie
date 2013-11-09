@@ -600,6 +600,14 @@ table {
   margin-bottom: 1.5em;
 }
 
+/* line 1, ../sass/components/_blocks.scss */
+#block-menu-menu-secondary-menu {
+  float: right;
+  background: #788991;
+  background: rgba(60, 60, 60, 0.5);
+  padding: 0.5em;
+}
+
 /* Layout rules */
 /**
  * @file

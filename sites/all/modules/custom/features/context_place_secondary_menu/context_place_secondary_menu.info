@@ -1,0 +1,10 @@
+name = Context place secondary menu
+description = Context to place secondary menu
+core = 7.x
+package = Context
+dependencies[] = context
+dependencies[] = ctools
+dependencies[] = menu
+features[context][] = secondary_menu
+features[ctools][] = context:context:3
+features[features_api][] = api:2
