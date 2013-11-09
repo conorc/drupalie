@@ -26,8 +26,11 @@
 
 /* line 17, ../sass/_blocks.scss */
 #block-views-news-and-events-block {
+  background: #98d3ae;
   clear: both;
-  width: 100%;
+  padding: 5%;
+  width: 90%;
+  text-align: center;
 }
 
 /* HTML element (SMACSS base) rules */

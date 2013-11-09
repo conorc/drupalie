@@ -19,7 +19,6 @@
   clear: both;
   padding: 5%;
   width: 90%;
-  text-align: center;
 
   
 }
