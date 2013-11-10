@@ -6,4 +6,24 @@
   h2 {
     display: none;
   }
+  .menu-button {
+    border: 1px solid white;
+    padding: 0.25em;
+    display: inline-block;
+    &.menu-expanded, &:hover {
+      border-top: 1px solid $dark-grey;
+      border-left: 1px solid $dark-grey;
+      border-top: 1px solid $darkish-grey;
+      border-left: 1px solid $darkish-grey;
+    }
+    &.menu-expanded {
+      background: $midgrey;
+      float: right;
+      clear: both;
+    }
+    &:hover {
+      cursor: pointer;
+      background: $light-grey;
+    }
+  }
 }
