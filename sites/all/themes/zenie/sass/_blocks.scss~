@@ -17,8 +17,10 @@
 #block-views-news-and-events-block {
   background: $lightgreen;
   clear: both;
-  padding: 6% 12%;
-  width: 76%;
+  padding: 5%;
+  width: 90%;
+
+  
 }
 
 
