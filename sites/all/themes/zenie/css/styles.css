@@ -6,6 +6,8 @@
  * of these @include files will be combined into a single file.
  */
 /* Import Sass mixins, variables, Compass modules, etc. */
+/* 1s colour fade transition*/
+/* 1s background colour fade transition*/
 /**
  * Homepage blocks
  */
@@ -625,11 +627,22 @@ table {
   list-style-type: none;
   list-style-image: none;
 }
-/* line 18, ../sass/components/_blocks.scss */
+/* line 16, ../sass/components/_blocks.scss */
+#block-menu-menu-secondary-menu ul li a:hover {
+  color: #f7f6b7;
+  transition: color 1s;
+  -moz-transition: color 1s;
+  /* Firefox 4 */
+  -webkit-transition: color 1s;
+  /* Safari and Chrome */
+  -o-transition: color 1s;
+  /* Opera */
+}
+/* line 22, ../sass/components/_blocks.scss */
 #block-menu-menu-secondary-menu h2 {
   display: none;
 }
-/* line 21, ../sass/components/_blocks.scss */
+/* line 25, ../sass/components/_blocks.scss */
 #block-menu-menu-secondary-menu .menu-button {
   -webkit-border-radius: 5px;
   border-radius: 5px;
@@ -638,21 +651,35 @@ table {
   border: 1px solid white;
   padding: 0.25em;
   display: inline-block;
+  transition: background-color 1s;
+  -moz-transition: background-color 1s;
+  /* Firefox 4 */
+  -webkit-transition: background-color 1s;
+  /* Safari and Chrome */
+  -o-transition: background-color 1s;
+  /* Opera */
 }
-/* line 28, ../sass/components/_blocks.scss */
+/* line 33, ../sass/components/_blocks.scss */
 #block-menu-menu-secondary-menu .menu-button.menu-expanded, #block-menu-menu-secondary-menu .menu-button:hover {
   border-top: 1px solid #3f3f40;
   border-left: 1px solid #3f3f40;
   border-top: 1px solid #4e4f4f;
   border-left: 1px solid #4e4f4f;
+  transition: background-color 1s;
+  -moz-transition: background-color 1s;
+  /* Firefox 4 */
+  -webkit-transition: background-color 1s;
+  /* Safari and Chrome */
+  -o-transition: background-color 1s;
+  /* Opera */
 }
-/* line 34, ../sass/components/_blocks.scss */
+/* line 40, ../sass/components/_blocks.scss */
 #block-menu-menu-secondary-menu .menu-button.menu-expanded {
   background: #788991;
   float: right;
   clear: both;
 }
-/* line 39, ../sass/components/_blocks.scss */
+/* line 45, ../sass/components/_blocks.scss */
 #block-menu-menu-secondary-menu .menu-button:hover {
   cursor: pointer;
   background: #f4f4f4;

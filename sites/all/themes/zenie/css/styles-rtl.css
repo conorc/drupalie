@@ -3,6 +3,8 @@
  * RTL companion for the styles.scss file.
  */
 /* Import Sass mixins, variables, Compass modules, etc. */
+/* 1s colour fade transition*/
+/* 1s background colour fade transition*/
 /* HTML element (SMACSS base) rules */
 /**
  * @file

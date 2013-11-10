@@ -1,4 +1,6 @@
 /* Import Sass mixins, variables, Compass modules, etc. */
+/* 1s colour fade transition*/
+/* 1s background colour fade transition*/
 /* line 4, ../sass/local.scss */
 a:link {
   color: #74c492;
