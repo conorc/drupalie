@@ -14,11 +14,19 @@
 
 
 // To understand behaviors, see https://drupal.org/node/756722#behaviors
-Drupal.behaviors.my_custom_behavior = {
+Drupal.behaviors.DrupalIeTheme = {
   attach: function(context, settings) {
 
-    // Place your code here.
-
+    // Make a menu button for the secondary menu and make it clickable to show/hide.
+    var $secondary_menu = $('#block-menu-menu-secondary-menu ul.menu');
+    var $secondary_menu_button_markup = '<div class="menu-button menu-collapsed">menu</div>';
+    $secondary_menu.before($secondary_menu_button_markup);
+    var $secondary_menu_button = $('#block-menu-menu-secondary-menu div.menu-button');
+    $secondary_menu.hide();
+    $secondary_menu_button.click(function() {
+      $secondary_menu.toggle();
+      $(this).toggleClass('menu-collapsed').toggleClass('menu-expanded');
+    });
   }
 };
 
