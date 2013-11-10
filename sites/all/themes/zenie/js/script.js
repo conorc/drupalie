@@ -19,13 +19,20 @@ Drupal.behaviors.DrupalIeTheme = {
 
     // Make a menu button for the secondary menu and make it clickable to show/hide.
     var $secondary_menu = $('#block-menu-menu-secondary-menu ul.menu');
-    var $secondary_menu_button_markup = '<div class="menu-button menu-collapsed">menu</div>';
+    var $secondary_menu_button_markup = '<div class="menu-button menu-collapsed">&#9776 menu</div>';
     $secondary_menu.before($secondary_menu_button_markup);
     var $secondary_menu_button = $('#block-menu-menu-secondary-menu div.menu-button');
     $secondary_menu.hide();
     $secondary_menu_button.click(function() {
       $secondary_menu.toggle();
-      $(this).toggleClass('menu-collapsed').toggleClass('menu-expanded');
+      $this = $(this);
+      $this.toggleClass('menu-collapsed').toggleClass('menu-expanded');
+      if ($this.hasClass("menu-expanded")) {
+        $this.html("&#9776 close");
+      }
+      else {
+        $this.html("&#9776 menu");
+      }
     });
   }
 };
