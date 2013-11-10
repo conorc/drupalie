@@ -35,3 +35,23 @@
     @include element-invisible-off;
   }
 }
+
+// Rounded corners.
+@mixin rounded-corners($radius) {
+  -webkit-border-radius: $radius;
+  border-radius: $radius;
+}
+
+// Inset box shadow (black).
+// Takes length and blur.
+@mixin inset-drop-shadow($length, $blur) {
+  -webkit-box-shadow: inset $length $length $blur 0px rgba(0, 0, 0, 0.5);
+  box-shadow: inset $length $length $blur 0px rgba(0, 0, 0, 0.5);
+}
+
+// Normal box shadow (black).
+// Takes length and blur.
+@mixin drop-shadow($length, $blur) {
+  -webkit-box-shadow: $length $length $blur 0px rgba(0, 0, 0, 0.5);
+  box-shadow: $length $length $blur 0px rgba(0, 0, 0, 0.5);
+}
