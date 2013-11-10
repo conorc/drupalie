@@ -13,6 +13,10 @@
     li {
       list-style-type: none;
       list-style-image: none;
+      a:hover {
+        color: $dirty-pale-yellow;
+        @include colour_fade;
+      }
     }
   }
   h2 {
@@ -25,11 +29,13 @@
     border: 1px solid white;
     padding: 0.25em;
     display: inline-block;
+    @include background_colour_fade;
     &.menu-expanded, &:hover {
       border-top: 1px solid $dark-grey;
       border-left: 1px solid $dark-grey;
       border-top: 1px solid $darkish-grey;
       border-left: 1px solid $darkish-grey;
+      @include background_colour_fade;
     }
     &.menu-expanded {
       background: $midgrey;

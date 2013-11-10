@@ -55,3 +55,19 @@
   -webkit-box-shadow: $length $length $blur 0px rgba(0, 0, 0, 0.5);
   box-shadow: $length $length $blur 0px rgba(0, 0, 0, 0.5);
 }
+
+/* 1s colour fade transition*/
+@mixin colour_fade {
+  transition: color 1s;
+  -moz-transition: color 1s; /* Firefox 4 */
+  -webkit-transition: color 1s; /* Safari and Chrome */
+  -o-transition: color 1s; /* Opera */
+}
+
+/* 1s background colour fade transition*/
+@mixin background_colour_fade {
+  transition: background-color 1s;
+  -moz-transition: background-color 1s; /* Firefox 4 */
+  -webkit-transition: background-color 1s; /* Safari and Chrome */
+  -o-transition: background-color 1s; /* Opera */
+}
